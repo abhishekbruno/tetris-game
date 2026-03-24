@@ -15,21 +15,27 @@ let linesCleared = 0;
 
 function update(time = 0) {
     if (gameOver) return;
+
     const delta = time - lastTime;
+
+    // 🧠 Prevent huge jumps (mobile lag fix)
+    if (delta > 100) {
+        lastTime = time;
+        requestAnimationFrame(update);
+        return;
+    }
+
     lastTime = time;
-
     dropCounter += delta;
-
 
     if (dropCounter >= dropInterval) {
         moveDown();
         dropCounter = 0;
     }
 
-
     if (linesCleared >= level * 5) {
         level++;
-        dropInterval = Math.max(100, dropInterval * 0.85); // prevent too fast
+        dropInterval = Math.max(100, dropInterval * 0.9);
     }
 
     draw();
@@ -37,20 +43,25 @@ function update(time = 0) {
     requestAnimationFrame(update);
 }
 
+let frameCount = 0;
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 
     drawGrid(ctx);
     drawGhost(ctx);
     drawPiece(ctx);
     drawNextPiece();
 
-
-    const scoreEl = document.getElementById("score");
-    if (scoreEl) {
-        scoreEl.innerText = `Score: ${score} | Level: ${level}`;
+    // 🎯 Update UI less often (performance boost)
+    if (frameCount % 10 === 0) {
+        const scoreEl = document.getElementById("score");
+        if (scoreEl) {
+            scoreEl.innerText = `Score: ${score} | Level: ${level}`;
+        }
     }
+
+    frameCount++;
 }
 function showGameOver() {
     gameOver = true;

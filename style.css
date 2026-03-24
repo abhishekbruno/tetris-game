@@ -24,6 +24,11 @@ canvas {
     border: 2px solid white;
 }
 
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
 /* 🔴 FULL SCREEN FLASH */
 #gameOverScreen {
     position: fixed;
@@ -110,4 +115,32 @@ canvas {
 
 body {
     touch-action: none;
+}
+
+@media (max-width: 600px) {
+
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #game {
+        width: 90vw;
+        height: auto;
+    }
+
+    #next {
+        width: 80px;
+        height: 80px;
+    }
+
+    #score {
+        font-size: 16px;
+    }
+
+}
+
+body {
+    overflow: hidden;
 }

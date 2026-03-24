@@ -137,13 +137,13 @@ function rotatePiece() {
     }
 }
 function getGhostY() {
-    let y = piece.y;
+    let testY = piece.y;
 
-    while (!isColliding(0, y - piece.y + 1)) {
-        y++;
+    while (!isColliding(0, testY - piece.y + 1)) {
+        testY++;
     }
 
-    return y;
+    return testY;
 }
 function drawGhost(ctx) {
     const ghostY = getGhostY();
