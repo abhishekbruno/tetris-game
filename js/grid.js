@@ -7,10 +7,20 @@ let grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 function drawGrid(ctx) {
     for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
+
+            // Filled blocks
             if (grid[r][c]) {
                 ctx.fillStyle = grid[r][c];
                 ctx.fillRect(c * SIZE, r * SIZE, SIZE, SIZE);
+
+                // Border
+                ctx.strokeStyle = "rgba(0,0,0,0.3)";
+                ctx.strokeRect(c * SIZE, r * SIZE, SIZE, SIZE);
             }
+
+            // Grid lines empty
+            ctx.strokeStyle = "rgba(255,255,255,0.05)";
+            ctx.strokeRect(c * SIZE, r * SIZE, SIZE, SIZE);
         }
     }
 }
@@ -27,5 +37,5 @@ function clearLines() {
         }
     }
 
-    return cleared; // 🔥 important
+    return cleared;
 }

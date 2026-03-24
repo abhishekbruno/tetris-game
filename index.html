@@ -3,21 +3,53 @@
 
 <head>
   <title>Tetris Clone</title>
+
+  <!-- 📱 Mobile support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <!-- 🎨 CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+  <!-- 🎯 Score -->
   <div id="score" style="
-  color: white;
-  text-align: center;
-  font-size: 20px;
-  margin-bottom: 10px;
-">
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+  ">
     Score: 0 | Level: 1
   </div>
 
-  <canvas id="game" width="300" height="600"></canvas>
+  <!-- 🎮 Game + Next -->
+  <div class="game-container">
 
+    <canvas id="game" width="300" height="600"></canvas>
+
+    <div style="color: white; text-align: center;">
+      <div>Next</div>
+      <canvas id="next" width="120" height="120"></canvas>
+    </div>
+
+  </div>
+
+  <!-- 💀 Game Over Screen -->
+  <div id="gameOverScreen">
+
+    <h1 id="gameOverText">GAME OVER</h1>
+
+    <p id="finalScore"></p>
+
+    <div class="buttons">
+      <button onclick="restartGame()">🔄 Restart</button>
+      <button onclick="exitGame()">🚪 Exit</button>
+    </div>
+
+  </div>
+
+  <!-- 🧠 Scripts (MUST be last) -->
   <script src="js/grid.js"></script>
   <script src="js/piece.js"></script>
   <script src="js/controls.js"></script>

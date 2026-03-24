@@ -8,6 +8,7 @@ const SHAPES = [
     { shape: [[1, 1, 0], [0, 1, 1]], color: "#ff0030" }  // Z
 ];
 let piece = createPiece();
+let nextPiece = createPiece();
 function createPiece() {
     const rand = SHAPES[Math.floor(Math.random() * SHAPES.length)];
 
@@ -24,7 +25,18 @@ function drawPiece(ctx) {
     for (let r = 0; r < piece.shape.length; r++) {
         for (let c = 0; c < piece.shape[r].length; c++) {
             if (piece.shape[r][c]) {
+
+                // 🎨 Fill
                 ctx.fillRect(
+                    (piece.x + c) * SIZE,
+                    (piece.y + r) * SIZE,
+                    SIZE,
+                    SIZE
+                );
+
+                // ✨ Border
+                ctx.strokeStyle = "rgba(0,0,0,0.4)";
+                ctx.strokeRect(
                     (piece.x + c) * SIZE,
                     (piece.y + r) * SIZE,
                     SIZE,
@@ -35,7 +47,7 @@ function drawPiece(ctx) {
     }
 }
 
-// 🔥 Optimized collision
+//   collision
 function isColliding(offsetX = 0, offsetY = 0) {
     for (let r = 0; r < piece.shape.length; r++) {
         for (let c = 0; c < piece.shape[r].length; c++) {
@@ -79,12 +91,13 @@ function moveDown() {
         piece.y++;
     } else {
         merge();
-        piece = createPiece();
+        piece = nextPiece;
+        nextPiece = createPiece();
 
-        // 💀 GAME OVER FIX
+
+        //  GAME OVER 
         if (isColliding(0, 0)) {
-            alert(`Game Over!\nScore: ${score}`);
-            location.reload();
+            showGameOver();
         }
     }
 }
@@ -121,5 +134,54 @@ function rotatePiece() {
 
     if (isColliding(0, 0)) {
         piece.shape = oldShape;
+    }
+}
+function getGhostY() {
+    let y = piece.y;
+
+    while (!isColliding(0, y - piece.y + 1)) {
+        y++;
+    }
+
+    return y;
+}
+function drawGhost(ctx) {
+    const ghostY = getGhostY();
+
+    ctx.fillStyle = "rgba(255,255,255,0.15)";
+    ctx.strokeStyle = "rgba(255,255,255,0.3)";
+
+    for (let r = 0; r < piece.shape.length; r++) {
+        for (let c = 0; c < piece.shape[r].length; c++) {
+            if (piece.shape[r][c]) {
+
+                ctx.fillRect(
+                    (piece.x + c) * SIZE,
+                    (ghostY + r) * SIZE,
+                    SIZE,
+                    SIZE
+                );
+
+                ctx.strokeRect(
+                    (piece.x + c) * SIZE,
+                    (ghostY + r) * SIZE,
+                    SIZE,
+                    SIZE
+                );
+            }
+        }
+    }
+}
+function hardDrop() {
+    while (!isColliding(0, 1)) {
+        piece.y++;
+    }
+
+    merge();
+    piece = createPiece();
+
+    // 💀 Game over check
+    if (isColliding(0, 0)) {
+        showGameOver();
     }
 }
