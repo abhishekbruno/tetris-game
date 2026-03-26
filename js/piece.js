@@ -87,6 +87,7 @@ function merge() {
 }
 
 function moveDown() {
+    ghostYCache = getGhostY();
     if (!isColliding(0, 1)) {
         piece.y++;
     } else {
@@ -138,6 +139,7 @@ function rotatePiece() {
 }
 function getGhostY() {
     let testY = piece.y;
+    let ghostYCache = 0;
 
     while (!isColliding(0, testY - piece.y + 1)) {
         testY++;
@@ -147,6 +149,7 @@ function getGhostY() {
 }
 function drawGhost(ctx) {
     const ghostY = getGhostY();
+
 
     ctx.fillStyle = "rgba(255,255,255,0.15)";
     ctx.strokeStyle = "rgba(255,255,255,0.3)";

@@ -3,22 +3,62 @@ const ctx = canvas.getContext("2d");
 const nextCanvas = document.getElementById("next");
 const nextCtx = nextCanvas.getContext("2d");
 
+// 📱 RESPONSIVE CANVAS (with space for next box)
+function resizeCanvas() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // leave space for next piece
+    let gameWidth = Math.min(screenWidth * 0.7, screenHeight * 0.5);
+    let gameHeight = gameWidth * 2;
+
+    canvas.style.width = gameWidth + "px";
+    canvas.style.height = gameHeight + "px";
+
+    // internal resolution (sharp rendering)
+    canvas.width = COLS * SIZE;
+    canvas.height = ROWS * SIZE;
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+// 🎯 Game state
 let lastTime = 0;
 let dropCounter = 0;
 let dropInterval = 500;
 let gameOver = false;
 
-//  Game state
 let score = 0;
 let level = 1;
 let linesCleared = 0;
 
+// 🔊 SOUND SYSTEM
+const sounds = {
+    move: new Audio("sounds/move.wav"),
+    rotate: new Audio("sounds/rotate.wav"),
+    clear: new Audio("sounds/clear.wav"),
+    gameover: new Audio("sounds/gameover.wav")
+};
+
+// preload sounds
+for (let key in sounds) {
+    sounds[key].load();
+}
+
+function playSound(sound) {
+    if (!sound) return;
+    sound.currentTime = 0;
+    sound.play().catch(() => { });
+}
+
+// 🎮 GAME LOOP
 function update(time = 0) {
     if (gameOver) return;
 
     const delta = time - lastTime;
 
-    // 🧠 Prevent huge jumps (mobile lag fix)
+    // prevent lag spikes
     if (delta > 100) {
         lastTime = time;
         requestAnimationFrame(update);
@@ -39,12 +79,14 @@ function update(time = 0) {
     }
 
     draw();
-
     requestAnimationFrame(update);
 }
 
+// 🎯 UI optimization
 let frameCount = 0;
+const scoreEl = document.getElementById("score");
 
+// 🎨 DRAW
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -53,16 +95,14 @@ function draw() {
     drawPiece(ctx);
     drawNextPiece();
 
-    // 🎯 Update UI less often (performance boost)
-    if (frameCount % 10 === 0) {
-        const scoreEl = document.getElementById("score");
-        if (scoreEl) {
-            scoreEl.innerText = `Score: ${score} | Level: ${level}`;
-        }
+    if (frameCount % 10 === 0 && scoreEl) {
+        scoreEl.innerText = `Score: ${score} | Level: ${level}`;
     }
 
     frameCount++;
 }
+
+// 💀 GAME OVER
 function showGameOver() {
     gameOver = true;
 
@@ -70,38 +110,36 @@ function showGameOver() {
     const text = document.getElementById("gameOverText");
     const scoreText = document.getElementById("finalScore");
 
-    // 💥 SCREEN SHAKE
     document.body.classList.add("shake");
-
-
-
     setTimeout(() => {
         document.body.classList.remove("shake");
     }, 300);
 
-    // 🔴 SHOW SCREEN
     screen.style.display = "flex";
-
-    // 🎯 SCORE
     scoreText.innerText = `Score: ${score}`;
 
-    // 💥 TEXT SLAM ANIMATION
-    text.style.animation = "slam 9.5s ease forwards";
+    // 🔊 sound
+    playSound(sounds.gameover);
+
+    // 💥 animation
+    text.style.animation = "slam 0.7s ease forwards";
 }
 
+// 🔄 Restart
 function restartGame() {
     location.reload();
 }
 
+// 🚪 Exit
 function exitGame() {
     window.close();
 }
 
+// 🧩 NEXT PIECE
 function drawNextPiece() {
     nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
 
     const size = 25;
-
     nextCtx.fillStyle = nextPiece.color;
 
     for (let r = 0; r < nextPiece.shape.length; r++) {
@@ -118,4 +156,5 @@ function drawNextPiece() {
     }
 }
 
+// 🚀 START
 update();
