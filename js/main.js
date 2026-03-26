@@ -20,19 +20,29 @@ function resizeCanvas() {
     canvas.height = ROWS * SIZE;
 }
 
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
+function resizeCanvas() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
 
-// 🎯 Game state
-let lastTime = 0;
-let dropCounter = 0;
-let dropInterval = 500;
-let gameOver = false;
+    let gameWidth;
 
-let score = 0;
-let level = 1;
-let linesCleared = 0;
+    // 📱 MOBILE
+    if (screenWidth < 600) {
+        gameWidth = screenWidth * 0.9;
+    }
+    // 💻 DESKTOP
+    else {
+        gameWidth = Math.min(screenWidth * 0.5, screenHeight * 0.8);
+    }
 
+    let gameHeight = gameWidth * 2;
+
+    canvas.style.width = gameWidth + "px";
+    canvas.style.height = gameHeight + "px";
+
+    canvas.width = COLS * SIZE;
+    canvas.height = ROWS * SIZE;
+}
 // 🔊 SOUND SYSTEM
 const sounds = {
     move: new Audio("sounds/move.wav"),
