@@ -1,13 +1,31 @@
-# Tetris Clone 🎮
+# Tetris 🎮 — Cyberpunk Edition
 
-Simple Tetris built using HTML, CSS, and JavaScript.
+A slick Tetris clone built with vanilla HTML, CSS & JavaScript, featuring a cyberpunk neon aesthetic.
 
 ## Features
-- Falling blocks
-- Basic movement
-- Grid system
+- Classic Tetris gameplay with all 7 tetrominoes
+- Ghost piece (drop preview)
+- Hold piece (press C)
+- Wall-kick rotation
+- Hard drop (Spacebar) & soft drop (↓)
+- Scoring with level progression (lines × multiplier)
+- Next piece preview
+- Pause menu with resume / restart / exit
+- Sound effects (move, rotate, clear, game over)
+- Mobile-responsive with touch controls
+- Cyberpunk UI with Orbitron font, neon cyan/pink palette, and animations
 
-## Next Steps
-- Add rotation
-- Add line clearing
-- Add scoring
+## Controls
+
+| Key | Action |
+|-----|--------|
+| ← → | Move left / right |
+| ↑ | Rotate |
+| ↓ | Soft drop |
+| Space | Hard drop |
+| C | Hold piece |
+| P | Pause |
+
+## Run
+
+Open `index.html` in any modern browser — no build step needed.

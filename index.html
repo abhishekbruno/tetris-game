@@ -1,60 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Tetris Clone</title>
-
-  <!-- 📱 Mobile support -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-  <!-- 🎨 CSS -->
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TETRIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <!-- 🎯 Score -->
-  <div id="score" style="
-    color: white;
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 10px;
-  ">
-    Score: 0 | Level: 1
-  </div>
+  <!-- HUD BAR -->
+  <header class="hud-bar">
+    <span class="hud-title">TETRIS</span>
+    <div class="hud-stats">
+      <div class="hud-stat">
+        <span class="hud-stat-label">SCORE</span>
+        <span class="hud-stat-val hud-cyan" id="scoreVal">000000</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hud-stat-label">LINES</span>
+        <span class="hud-stat-val" id="linesVal">00</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hud-stat-label">LEVEL</span>
+        <span class="hud-stat-val hud-pink" id="levelVal">01</span>
+      </div>
+    </div>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="pause-btn" onclick="toggleGameboyMode()">[ GB ]</button>
+      <button class="pause-btn" onclick="togglePause()">[ P ] PAUSE</button>
+    </div>
+  </header>
 
-  <!-- 🎮 Game + Next -->
-  <div class="game-container">
+  <!-- GAME LAYOUT -->
+  <main class="game-layout">
 
-    <canvas id="game" width="300" height="600"></canvas>
-
-    <div style="color: white; text-align: center;">
-      <div>Next</div>
-      <canvas id="next" width="120" height="120"></canvas>
+    <div class="canvas-wrap">
+      <canvas id="game" width="300" height="600"></canvas>
     </div>
 
-  </div>
+    <aside class="side-panel">
+      <div class="panel-card">
+        <div class="panel-card-label">NEXT</div>
+        <canvas id="next" width="120" height="100"></canvas>
+      </div>
 
-  <!-- 💀 Game Over Screen -->
-  <div id="gameOverScreen">
+      <div class="panel-card">
+        <div class="panel-card-label">STATS</div>
+        <div class="stat-row">
+          <span class="stat-key">SCORE</span>
+          <span class="stat-val" id="scoreSide">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-key">LINES</span>
+          <span class="stat-val" id="linesSide">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-key">LEVEL</span>
+          <span class="stat-val stat-pink" id="levelSide">1</span>
+        </div>
+        <div class="level-bar-bg">
+          <div class="level-bar-fill" id="levelBar"></div>
+        </div>
+      </div>
 
-    <h1 id="gameOverText">GAME OVER</h1>
+      <div class="panel-card panel-card--grow">
+        <div class="panel-card-label">CONTROLS</div>
+        <div class="ctrl-list">
+          <div class="ctrl-row"><span class="ctrl-key">← →</span><span class="ctrl-desc">MOVE</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">↑</span><span class="ctrl-desc">ROTATE</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">↓</span><span class="ctrl-desc">SOFT DROP</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">SPC</span><span class="ctrl-desc">HARD DROP</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">C</span><span class="ctrl-desc">HOLD</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">P</span><span class="ctrl-desc">PAUSE</span></div>
+        </div>
+      </div>
+    </aside>
+  </main>
 
-    <p id="finalScore"></p>
-
-    <div class="buttons">
-      <button onclick="restartGame()">🔄 Restart</button>
-      <button onclick="exitGame()">🚪 Exit</button>
+  <!-- MOBILE CONTROLS -->
+  <div class="mobile-controls">
+    <div class="ctrl-pad">
+      <div class="ctrl-col">
+        <button class="ctrl-btn" ontouchstart="mobileHold()" onclick="mobileHold()">C</button>
+        <span class="ctrl-btn-label">HOLD</span>
+      </div>
+      <div class="ctrl-col">
+        <button class="ctrl-btn" ontouchstart="mobileMoveLeft()" onclick="mobileMoveLeft()">◀</button>
+        <span class="ctrl-btn-label">LEFT</span>
+      </div>
+      <div class="ctrl-col">
+        <button class="ctrl-btn" ontouchstart="mobileRotate()" onclick="mobileRotate()">↑</button>
+        <span class="ctrl-btn-label">ROTATE</span>
+      </div>
+      <div class="ctrl-col">
+        <button class="ctrl-btn" ontouchstart="mobileMoveRight()" onclick="mobileMoveRight()">▶</button>
+        <span class="ctrl-btn-label">RIGHT</span>
+      </div>
+      <div class="ctrl-col">
+        <button class="ctrl-btn ctrl-btn--danger" ontouchstart="mobileHardDrop()" onclick="mobileHardDrop()">▼</button>
+        <span class="ctrl-btn-label">DROP</span>
+      </div>
     </div>
-
   </div>
 
-  <!-- 🧠 Scripts (MUST be last) -->
-  <script src="js/grid.js"></script>
-  <script src="js/piece.js"></script>
-  <script src="js/controls.js"></script>
-  <script src="js/main.js"></script>
+  <!-- PAUSE OVERLAY -->
+  <div class="overlay" id="pauseScreen">
+    <div class="overlay-box overlay-box--cyan">
+      <div class="pause-icon">
+        <div class="pause-bar"></div>
+        <div class="pause-bar"></div>
+      </div>
+      <h2 class="overlay-title overlay-title--cyan">PAUSED</h2>
+      <div class="overlay-menu">
+        <button class="overlay-menu-btn overlay-menu-btn--active" onclick="togglePause()">▶ &nbsp;RESUME</button>
+        <button class="overlay-menu-btn" onclick="restartGame()">↺ &nbsp;RESTART</button>
+        <button class="overlay-menu-btn" onclick="exitGame()">✕ &nbsp;EXIT</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- GAME OVER OVERLAY -->
+  <div class="overlay" id="gameOverScreen">
+    <div class="overlay-box overlay-box--pink">
+      <h2 class="overlay-title overlay-title--pink" id="gameOverText">GAME OVER</h2>
+      <div class="overlay-divider"></div>
+      <span class="overlay-score-label">FINAL SCORE</span>
+      <span class="overlay-score-val" id="finalScore">000000</span>
+      <div class="go-mini-stats">
+        <div class="go-mini">
+          <span class="go-mini-label">LINES</span>
+          <span class="go-mini-val" id="finalLines">0</span>
+        </div>
+        <div class="go-mini">
+          <span class="go-mini-label">LEVEL</span>
+          <span class="go-mini-val" id="finalLevel">1</span>
+        </div>
+      </div>
+      <div class="overlay-btn-row">
+        <button class="overlay-btn overlay-btn--primary" onclick="restartGame()">▶ PLAY AGAIN</button>
+        <button class="overlay-btn overlay-btn--secondary" onclick="exitGame()">✕ EXIT</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
 </body>
 
 </html>
