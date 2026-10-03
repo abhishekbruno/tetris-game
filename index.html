@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TETRIS</title>
+  <title>TETRIS — Cyberpunk Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap"
@@ -31,10 +31,9 @@
         <span class="hud-stat-val hud-pink" id="levelVal">01</span>
       </div>
     </div>
-    </div>
-    <div style="display:flex; gap:8px;">
-      <button class="pause-btn" onclick="toggleGameboyMode()">[ GB ]</button>
-      <button class="pause-btn" onclick="togglePause()">[ P ] PAUSE</button>
+    <div class="hud-actions">
+      <button class="pause-btn" id="btnGameboy" title="Toggle GameBoy DMG Retro Mode">[ GB ]</button>
+      <button class="pause-btn" id="btnPause" title="Pause Game">[ P ] PAUSE</button>
     </div>
   </header>
 
@@ -46,13 +45,25 @@
     </div>
 
     <aside class="side-panel">
+      <!-- HOLD PANEL -->
       <div class="panel-card">
-        <div class="panel-card-label">NEXT</div>
-        <canvas id="next" width="120" height="100"></canvas>
+        <div class="panel-card-label">HOLD</div>
+        <canvas id="hold" width="120" height="85"></canvas>
       </div>
 
+      <!-- NEXT PANEL -->
+      <div class="panel-card">
+        <div class="panel-card-label">NEXT</div>
+        <canvas id="next" width="120" height="85"></canvas>
+      </div>
+
+      <!-- STATS PANEL -->
       <div class="panel-card">
         <div class="panel-card-label">STATS</div>
+        <div class="stat-row">
+          <span class="stat-key">HIGH SCORE</span>
+          <span class="stat-val hud-cyan" id="highScoreSide">0</span>
+        </div>
         <div class="stat-row">
           <span class="stat-key">SCORE</span>
           <span class="stat-val" id="scoreSide">0</span>
@@ -65,20 +76,30 @@
           <span class="stat-key">LEVEL</span>
           <span class="stat-val stat-pink" id="levelSide">1</span>
         </div>
-        <div class="level-bar-bg">
+        <div class="stat-row">
+          <span class="stat-key">COMBO</span>
+          <span class="stat-val" id="comboSide">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-key">B2B</span>
+          <span class="stat-val stat-pink" id="b2bSide">OFF</span>
+        </div>
+        <div class="level-bar-bg" title="Level progress">
           <div class="level-bar-fill" id="levelBar"></div>
         </div>
       </div>
 
+      <!-- CONTROLS LEGEND -->
       <div class="panel-card panel-card--grow">
         <div class="panel-card-label">CONTROLS</div>
         <div class="ctrl-list">
-          <div class="ctrl-row"><span class="ctrl-key">← →</span><span class="ctrl-desc">MOVE</span></div>
-          <div class="ctrl-row"><span class="ctrl-key">↑</span><span class="ctrl-desc">ROTATE</span></div>
-          <div class="ctrl-row"><span class="ctrl-key">↓</span><span class="ctrl-desc">SOFT DROP</span></div>
-          <div class="ctrl-row"><span class="ctrl-key">SPC</span><span class="ctrl-desc">HARD DROP</span></div>
-          <div class="ctrl-row"><span class="ctrl-key">C</span><span class="ctrl-desc">HOLD</span></div>
-          <div class="ctrl-row"><span class="ctrl-key">P</span><span class="ctrl-desc">PAUSE</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">← → / A D</span><span class="ctrl-desc">MOVE</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">↑ / W / X</span><span class="ctrl-desc">ROTATE CW</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">Z / CTRL</span><span class="ctrl-desc">ROTATE CCW</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">↓ / S</span><span class="ctrl-desc">SOFT DROP</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">SPACE</span><span class="ctrl-desc">HARD DROP</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">C / SHIFT</span><span class="ctrl-desc">HOLD</span></div>
+          <div class="ctrl-row"><span class="ctrl-key">P / ESC</span><span class="ctrl-desc">PAUSE</span></div>
         </div>
       </div>
     </aside>
@@ -88,23 +109,31 @@
   <div class="mobile-controls">
     <div class="ctrl-pad">
       <div class="ctrl-col">
-        <button class="ctrl-btn" ontouchstart="mobileHold()" onclick="mobileHold()">C</button>
+        <button class="ctrl-btn" id="btnMobileHold">C</button>
         <span class="ctrl-btn-label">HOLD</span>
       </div>
       <div class="ctrl-col">
-        <button class="ctrl-btn" ontouchstart="mobileMoveLeft()" onclick="mobileMoveLeft()">◀</button>
+        <button class="ctrl-btn" id="btnMobileLeft">◀</button>
         <span class="ctrl-btn-label">LEFT</span>
       </div>
       <div class="ctrl-col">
-        <button class="ctrl-btn" ontouchstart="mobileRotate()" onclick="mobileRotate()">↑</button>
-        <span class="ctrl-btn-label">ROTATE</span>
+        <button class="ctrl-btn" id="btnMobileRotate">↻</button>
+        <span class="ctrl-btn-label">ROT CW</span>
       </div>
       <div class="ctrl-col">
-        <button class="ctrl-btn" ontouchstart="mobileMoveRight()" onclick="mobileMoveRight()">▶</button>
+        <button class="ctrl-btn" id="btnMobileRotateCCW">↺</button>
+        <span class="ctrl-btn-label">ROT CCW</span>
+      </div>
+      <div class="ctrl-col">
+        <button class="ctrl-btn" id="btnMobileRight">▶</button>
         <span class="ctrl-btn-label">RIGHT</span>
       </div>
       <div class="ctrl-col">
-        <button class="ctrl-btn ctrl-btn--danger" ontouchstart="mobileHardDrop()" onclick="mobileHardDrop()">▼</button>
+        <button class="ctrl-btn" id="btnMobileSoftDrop">▼</button>
+        <span class="ctrl-btn-label">SOFT</span>
+      </div>
+      <div class="ctrl-col">
+        <button class="ctrl-btn ctrl-btn--danger" id="btnMobileHardDrop">⤓</button>
         <span class="ctrl-btn-label">DROP</span>
       </div>
     </div>
@@ -119,9 +148,9 @@
       </div>
       <h2 class="overlay-title overlay-title--cyan">PAUSED</h2>
       <div class="overlay-menu">
-        <button class="overlay-menu-btn overlay-menu-btn--active" onclick="togglePause()">▶ &nbsp;RESUME</button>
-        <button class="overlay-menu-btn" onclick="restartGame()">↺ &nbsp;RESTART</button>
-        <button class="overlay-menu-btn" onclick="exitGame()">✕ &nbsp;EXIT</button>
+        <button class="overlay-menu-btn overlay-menu-btn--active" id="btnResume">▶ &nbsp;RESUME</button>
+        <button class="overlay-menu-btn" id="btnRestartPause">↺ &nbsp;RESTART</button>
+        <button class="overlay-menu-btn" id="btnExitPause">✕ &nbsp;EXIT</button>
       </div>
     </div>
   </div>
@@ -131,9 +160,15 @@
     <div class="overlay-box overlay-box--pink">
       <h2 class="overlay-title overlay-title--pink" id="gameOverText">GAME OVER</h2>
       <div class="overlay-divider"></div>
+      
       <span class="overlay-score-label">FINAL SCORE</span>
       <span class="overlay-score-val" id="finalScore">000000</span>
+
       <div class="go-mini-stats">
+        <div class="go-mini">
+          <span class="go-mini-label">HIGH SCORE</span>
+          <span class="go-mini-val hud-cyan" id="finalHighScore">000000</span>
+        </div>
         <div class="go-mini">
           <span class="go-mini-label">LINES</span>
           <span class="go-mini-val" id="finalLines">0</span>
@@ -143,14 +178,15 @@
           <span class="go-mini-val" id="finalLevel">1</span>
         </div>
       </div>
+
       <div class="overlay-btn-row">
-        <button class="overlay-btn overlay-btn--primary" onclick="restartGame()">▶ PLAY AGAIN</button>
-        <button class="overlay-btn overlay-btn--secondary" onclick="exitGame()">✕ EXIT</button>
+        <button class="overlay-btn overlay-btn--primary" id="btnPlayAgain">▶ PLAY AGAIN</button>
+        <button class="overlay-btn overlay-btn--secondary" id="btnExitGameOver">✕ EXIT</button>
       </div>
     </div>
   </div>
 
-  <script src="main.js"></script>
+  <script type="module" src="src/main.js"></script>
 </body>
 
 </html>

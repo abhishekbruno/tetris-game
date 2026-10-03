@@ -1,0 +1,19 @@
+{
+  "name": "tetris-cyberpunk",
+  "version": "1.0.0",
+  "description": "Tetris Cyberpunk Edition - Enhanced with SRS, Guideline Scoring, T-Spins, Perfect Clears and Sound",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/**/*.test.js",
+    "build": "npx esbuild src/main.js --bundle --outfile=main.js --format=esm",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "tetris",
+    "game",
+    "cyberpunk",
+    "srs"
+  ],
+  "author": "",
+  "license": "MIT"
+}
